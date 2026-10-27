@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>우산 알리미 | 오늘의 외출 준비</title>
+<style>
+:root{
+  --navy:#18344f;--blue:#3478b8;--sky:#eaf5ff;--pale:#f4f8fc;
+  --gray:#64748b;--line:#dce6ef;--white:#fff;--rain:#dcecf9;
+  --shadow:0 12px 34px rgba(35,74,109,.09);--red:#d94d4d;
+}
+*{box-sizing:border-box}
+body{margin:0;font-family:"Pretendard","Noto Sans KR",Arial,sans-serif;background:linear-gradient(180deg,#eaf5ff 0,#f6f9fc 420px,#f6f9fc 100%);color:var(--navy);min-height:100vh}
+button,input,select{font:inherit}
+button{cursor:pointer}
+.topbar{display:flex;align-items:center;justify-content:space-between;gap:20px;max-width:1160px;margin:auto;padding:26px 28px 18px}
+.brand{display:flex;align-items:center;gap:12px;font-weight:850;font-size:22px;letter-spacing:-.7px}
+.brand-icon{width:45px;height:45px;border-radius:15px;background:#fff;display:grid;place-items:center;font-size:25px;box-shadow:var(--shadow)}
+.date-label{font-size:13px;color:var(--gray);font-weight:600}
+main{max-width:1100px;margin:0 auto;padding:8px 28px 54px}
+.alert{display:none;align-items:center;gap:15px;padding:18px 20px;background:#fff5f2;border:1px solid #ffd4c8;border-left:5px solid var(--red);border-radius:18px;margin:12px 0 22px;box-shadow:var(--shadow)}
+.alert.show{display:flex}
+.alert-symbol{font-size:30px}
+.alert-copy{flex:1}
+.alert-copy strong{display:block;color:#9f3029;font-size:16px;margin-bottom:5px}
+.alert-copy span{font-size:13px;color:#8b514c;line-height:1.5}
+.btn{border:0;border-radius:12px;padding:12px 16px;font-weight:750;transition:transform .15s,opacity .15s}
+.btn:hover{transform:translateY(-1px)}
+.btn-primary{background:var(--blue);color:#fff}
+.btn-danger{background:var(--red);color:#fff;white-space:nowrap}
+.btn-light{background:#edf5fc;color:var(--navy);border:1px solid var(--line)}
+.hero{display:grid;grid-template-columns:1.25fr .75fr;gap:20px;margin-bottom:20px}
+.card{background:rgba(255,255,255,.94);border:1px solid rgba(220,230,239,.9);border-radius:24px;padding:25px;box-shadow:var(--shadow)}
+.weather-card{position:relative;overflow:hidden;min-height:260px;background:linear-gradient(130deg,#fff 0%,#f1f8ff 100%)}
+.weather-card:after{content:"";position:absolute;width:230px;height:230px;border-radius:50%;background:#dbeeff;right:-55px;top:80px;opacity:.7}
+.eyebrow{font-size:12px;letter-spacing:1px;text-transform:uppercase;color:var(--blue);font-weight:850}
+.weather-main{display:flex;align-items:center;gap:22px;margin-top:26px;position:relative;z-index:1}
+.weather-emoji{font-size:76px;filter:drop-shadow(0 8px 8px rgba(40,90,130,.12))}
+.temp{font-size:52px;font-weight:850;letter-spacing:-2px;line-height:1}
+.temp small{font-size:22px;color:#8194a6;letter-spacing:0}
+.weather-state{font-size:17px;font-weight:750;margin-top:10px}
+.weather-sub{font-size:13px;color:var(--gray);margin-top:8px}
+.temp-range{display:flex;gap:15px;margin-top:23px;font-size:14px;font-weight:700}
+.temp-range span{color:var(--gray);font-weight:500}
+.side-card{display:flex;flex-direction:column;justify-content:space-between;background:linear-gradient(145deg,#244d72,#18344f);color:#fff}
+.side-card .eyebrow{color:#b7dcff}
+.rain-big{font-size:45px;font-weight:850;letter-spacing:-1px;margin:15px 0 4px}
+.rain-big small{font-size:20px}
+.rain-caption{font-size:13px;color:#d5e7f5}
+.progress{height:10px;background:rgba(255,255,255,.2);border-radius:99px;overflow:hidden;margin:20px 0 10px}
+.progress-fill{height:100%;width:0;background:#9ed5ff;border-radius:99px;transition:width .3s}
+.rain-status{font-size:13px;font-weight:700;color:#e6f4ff}
+.grid-bottom{display:grid;grid-template-columns:1fr 1fr;gap:20px}
+.card-title{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:18px}
+.card-title h2{font-size:18px;margin:0;letter-spacing:-.5px}
+.tag{font-size:11px;padding:6px 9px;border-radius:99px;background:#edf5fc;color:#52718c;font-weight:750;white-space:nowrap}
+.prep-list{display:grid;gap:12px}
+.prep-item{display:flex;align-items:center;gap:13px;padding:14px;background:#f7fafd;border:1px solid #e7eef5;border-radius:15px}
+.prep-icon{width:42px;height:42px;border-radius:13px;background:#e6f2ff;display:grid;place-items:center;font-size:22px;flex-shrink:0}
+.prep-text{flex:1}
+.prep-text strong{display:block;font-size:14px;margin-bottom:4px}
+.prep-text span{font-size:12px;color:var(--gray);line-height:1.45}
+.prep-check{width:22px;height:22px;accent-color:var(--blue);cursor:pointer}
+.tip{margin-top:14px;padding:12px 14px;border-radius:12px;background:#edf6ff;color:#496985;font-size:12px;line-height:1.6}
+.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.field{display:flex;flex-direction:column;gap:7px}
+.field label{font-size:12px;font-weight:750;color:#526b81}
+.field input,.field select{width:100%;min-width:0;padding:12px;border:1px solid #d5e1eb;border-radius:11px;background:#fff;color:var(--navy);outline:none}
+.field input:focus,.field select:focus{border-color:var(--blue);box-shadow:0 0 0 3px #dceeff}
+.full{grid-column:1/-1}
+.form-actions{display:flex;gap:10px;margin-top:17px;flex-wrap:wrap}
+.form-message{min-height:20px;margin-top:12px;font-size:12px;line-height:1.5;color:var(--gray)}
+.form-message.error{color:#b83232}.form-message.success{color:#187447}
+.footer{text-align:center;font-size:11px;color:#8495a5;margin-top:25px;line-height:1.7}
+.demo-note{font-size:11px;color:#70869a;margin-top:10px}
+.hidden{display:none!important}
+@media(max-width:720px){
+ .topbar{padding:20px 16px 12px;align-items:flex-start}.brand{font-size:19px}.brand-icon{width:40px;height:40px}.date-label{text-align:right;font-size:11px;max-width:125px;line-height:1.5}
+ main{padding:8px 15px 35px}.hero,.grid-bottom{grid-template-columns:1fr}.card{padding:20px;border-radius:20px}
+ .weather-card{min-height:235px}.weather-emoji{font-size:62px}.temp{font-size:46px}.weather-main{gap:16px}
+ .side-card{min-height:210px}.alert{align-items:flex-start;padding:15px;gap:10px}.alert-symbol{font-size:25px}.alert-copy strong{font-size:14px}.alert-copy span{font-size:12px}.alert .btn{padding:10px;font-size:12px}
+ .form-grid{grid-template-columns:1fr 1fr}.full{grid-column:1/-1}
+}
+@media(max-width:390px){.form-grid{grid-template-columns:1fr}.full{grid-column:auto}.alert{flex-wrap:wrap}.alert .btn{margin-left:42px}}
+</style>
+</head>
+<body>
+<header class="topbar">
+  <div class="brand"><div class="brand-icon">☂️</div><span>우산 알리미</span></div>
+  <div class="date-label" id="todayLabel">오늘도 가볍게, 준비는 꼼꼼하게</div>
+</header>
+<main>
+  <section class="alert" id="umbrellaAlert" role="status" aria-live="polite">
+    <div class="alert-symbol">☔</div>
+    <div class="alert-copy"><strong id="alertTitle">우산을 챙겨 주세요!</strong><span id="alertDesc">오늘 비가 올 가능성이 높아요.</span></div>
+    <button class="btn btn-danger" id="confirmUmbrella">우산 챙겼어요 ✓</button>
+  </section>
+
+  <section class="hero">
+    <article class="card weather-card">
+      <div class="eyebrow">TODAY'S WEATHER · 오늘의 날씨</div>
+      <div class="weather-main">
+        <div class="weather-emoji" id="weatherEmoji">🌤️</div>
+        <div><div class="temp"><span id="currentTemp">18</span><small>°C</small></div><div class="weather-state" id="weatherState">구름 조금</div><div class="weather-sub" id="weatherAdvice">기분 좋은 하루, 외출 준비를 확인해요.</div></div>
+      </div>
+      <div class="temp-range"><div>최저 <strong id="lowTemp">12°</strong></div><div>최고 <strong id="highTemp">25°</strong></div><div><span id="windLabel">☁️ 오늘의 날씨</span></div></div>
+    </article>
+    <article class="card side-card">
+      <div>
+        <div class="eyebrow">RAIN CHANCE · 강수 확률</div>
+        <div class="rain-big"><span id="rainPercent">56</span><small>%</small></div>
+        <div class="rain-caption">오늘 비가 내릴 가능성</div>
+        <div class="progress" aria-label="강수 확률"><div class="progress-fill" id="rainBar"></div></div>
+        <div class="rain-status" id="rainStatus">우산을 챙길지 확인해 보세요.</div>
+      </div>
+    </article>
+  </section>
+
+  <section class="grid-bottom">
+    <article class="card">
+      <div class="card-title"><h2>🎒 외출 준비 체크</h2><span class="tag" id="checkCount">0 / 2 완료</span></div>
+      <div class="prep-list">
+        <label class="prep-item"><div class="prep-icon">☂️</div><div class="prep-text"><strong>우산 챙기기</strong><span id="umbrellaPrepText">강수 확률을 확인하고 준비해요.</span></div><input class="prep-check" type="checkbox" id="umbrellaCheck" aria-label="우산 챙김 완료"></label>
+        <label class="prep-item"><div class="prep-icon">🧥</div><div class="prep-text"><strong>겉옷 챙기기</strong><span id="coatPrepText">기온에 맞는 겉옷을 준비해요.</span></div><input class="prep-check" type="checkbox" id="coatCheck" aria-label="겉옷 챙김 완료"></label>
+      </div>
+      <div class="tip" id="dailyTip">작은 준비가 하루를 더 편하게 만들어요.</div>
+    </article>
+
+    <article class="card">
+      <div class="card-title"><h2>⚙️ 오늘 날씨 설정</h2><span class="tag">직접 입력</span></div>
+      <form id="weatherForm" novalidate>
+        <div class="form-grid">
+          <div class="field"><label for="condition">날씨 상태</label><select id="condition"><option value="sunny">맑음 ☀️</option><option value="cloudy" selected>구름 조금 🌤️</option><option value="overcast">흐림 ☁️</option><option value="rain">비 🌧️</option><option value="snow">눈 ❄️</option></select></div>
+          <div class="field"><label for="rainInput">강수 확률 (%)</label><input id="rainInput" type="number" min="0" max="100" step="1" value="56" inputmode="numeric" required></div>
+          <div class="field"><label for="currentInput">현재 기온 (°C)</label><input id="currentInput" type="number" min="-50" max="60" step="1" value="18" required></div>
+          <div class="field"><label for="lowInput">최저 기온 (°C)</label><input id="lowInput" type="number" min="-50" max="60" step="1" value="12" required></div>
+          <div class="field"><label for="highInput">최고 기온 (°C)</label><input id="highInput" type="number" min="-50" max="60" step="1" value="25" required></div>
+          <div class="field"><label for="thresholdInput">우산 알림 기준 (%)</label><input id="thresholdInput" type="number" min="1" max="100" step="1" value="60" required></div>
+          <div class="full">
+            <div class="form-actions"><button class="btn btn-primary" type="submit">날씨 업데이트</button><button class="btn btn-light" type="button" id="demoBtn">예시 비 오는 날 보기</button><button class="btn btn-light" type="button" id="resetBtn">기본값으로</button></div>
+            <div class="form-message" id="formMessage" aria-live="polite"></div>
+          </div>
+        </div>
+      </form>
+      <div class="demo-note">※ 이 앱은 실제 기상 정보를 자동 수집하지 않으며, 입력한 값과 예시 데이터로 동작합니다.</div>
+    </article>
+  </section>
+  <div class="footer">우산 알리미 · 브라우저에서 바로 실행되는 개인용 날씨 준비 도우미<br>날씨 정보는 사용자가 입력한 값이며 실제 예보와 다를 수 있어요.</div>
+</main>
+<script>
+(function(){
+  "use strict";
+  const $ = id => document.getElementById(id);
+  const DEFAULT = {condition:"cloudy",rain:56,current:18,low:12,high:25,threshold:60,umbrellaChecked:false,coatChecked:false,alertDismissed:false};
+  const CONDITIONS = {
+    sunny:{label:"맑음",emoji:"☀️",advice:"햇살이 좋은 날이에요. 자외선도 확인해요."},
+    cloudy:{label:"구름 조금",emoji:"🌤️",advice:"가벼운 외출에 좋은 날씨예요."},
+    overcast:{label:"흐림",emoji:"☁️",advice:"하늘이 흐려요. 우산 여부를 확인해요."},
+    rain:{label:"비",emoji:"🌧️",advice:"빗길에 미끄러지지 않도록 조심해요."},
+    snow:{label:"눈",emoji:"❄️",advice:"길이 미끄러울 수 있으니 천천히 이동해요."}
+  };
+  let state = {...DEFAULT};
+  try {
+    const saved = localStorage.getItem("umbrellaAlertStateV1");
+    if(saved){ const parsed=JSON.parse(saved); state={...DEFAULT,...parsed}; }
+  } catch(e) { /* 저장 데이터가 없거나 손상되면 기본값 사용 */ }
+
+  function save(){
+    try { localStorage.setItem("umbrellaAlertStateV1",JSON.stringify(state)); } catch(e) {}
+  }
+  function dateText(){
+    const now=new Date();
+    return new Intl.DateTimeFormat("ko-KR",{year:"numeric",month:"long",day:"numeric",weekday:"long"}).format(now);
+  }
+  $("todayLabel").textContent=dateText();
+  function showMessage(text,type){
+    const el=$("formMessage"); el.textContent=text; el.className="form-message"+(type?" "+type:"");
+  }
+  function syncInputs(){
+    $("condition").value=state.condition;
+    $("rainInput").value=state.rain;
+    $("currentInput").value=state.current;
+    $("lowInput").value=state.low;
+    $("highInput").value=state.high;
+    $("thresholdInput").value=state.threshold;
+  }
+  function render(){
+    const c=CONDITIONS[state.condition]||CONDITIONS.cloudy;
+    $("weatherEmoji").textContent=c.emoji;
+    $("weatherState").textContent=c.label;
+    $("weatherAdvice").textContent=c.advice;
+    $("currentTemp").textContent=state.current;
+    $("lowTemp").textContent=state.low+"°";
+    $("highTemp").textContent=state.high+"°";
+    $("rainPercent").textContent=state.rain;
+    $("rainBar").style.width=state.rain+"%";
+    const rainAlert=state.rain>=state.threshold;
+    $("rainStatus").textContent=rainAlert?"☔ 우산 추천 · 알림 기준 이상":"현재 기준에서는 우산 알림 대상이 아니에요.";
+    $("umbrellaAlert").classList.toggle("show",rainAlert && !state.alertDismissed);
+    $("alertTitle").textContent="우산을 챙겨 주세요! ("+state.rain+"%)";
+    $("alertDesc").textContent="오늘 강수 확률이 "+state.rain+"%예요. 외출 전 우산을 확인해 주세요.";
+    $("confirmUmbrella").textContent=state.umbrellaChecked?"우산 챙김 완료 ✓":"우산 챙겼어요 ✓";
+    $("umbrellaCheck").checked=state.umbrellaChecked;
+    $("coatCheck").checked=state.coatChecked;
+    $("umbrellaPrepText").textContent=rainAlert?"강수 확률 "+state.rain+"% · 우산을 준비하는 게 좋아요.":"강수 확률 "+state.rain+"% · 외출 전 날씨를 확인해요.";
+    $("coatPrepText").textContent=state.current<=10?"쌀쌀해요. 따뜻한 겉옷을 챙겨요.":state.current<=17?"선선해요. 가벼운 겉옷을 추천해요.":"비나 실내 냉방에 대비해 얇은 겉옷을 고려해요.";
+    $("dailyTip").textContent=state.rain>=state.threshold?"비 예보가 있어요. 우산을 챙겼는지 체크하고 출발하세요.":state.current<=10?"기온이 낮아요. 따뜻하게 입고 외출하세요.":"외출 전 날씨를 한 번 더 확인하면 좋아요.";
+    const count=(state.umbrellaChecked?1:0)+(state.coatChecked?1:0);
+    $("checkCount").textContent=count+" / 2 완료";
+    $("checkCount").textContent=count===2?"준비 완료 ✓":count+" / 2 완료";
+    $("windLabel").textContent=state.condition==="rain"?"🌧️ 비 오는 날":state.condition==="snow"?"❄️ 눈 오는 날":"🌤️ 오늘의 날씨";
+  }
+  function readNumber(id,label,min,max){
+    const raw=$(id).value.trim();
+    if(raw==="") throw new Error(label+" 값을 입력해 주세요.");
+    const value=Number(raw);
+    if(!Number.isFinite(value) || !Number.isInteger(value)) throw new Error(label+"은(는) 정수로 입력해 주세요.");
+    if(value<min || value>max) throw new Error(label+"은(는) "+min+"~"+max+" 범위로 입력해 주세요.");
+    return value;
+  }
+  $("weatherForm").addEventListener("submit",function(e){
+    e.preventDefault();
+    try{
+      const next={
+        condition:$("condition").value,
+        rain:readNumber("rainInput","강수 확률",0,100),
+        current:readNumber("currentInput","현재 기온",-50,60),
+        low:readNumber("lowInput","최저 기온",-50,60),
+        high:readNumber("highInput","최고 기온",-50,60),
+        threshold:readNumber("thresholdInput","우산 알림 기준",1,100)
+      };
+      if(next.low>next.high) throw new Error("최저 기온은 최고 기온보다 높을 수 없어요.");
+      if(next.current<next.low || next.current>next.high) throw new Error("현재 기온은 최저 기온과 최고 기온 사이로 입력해 주세요.");
+      const wasAlert=state.rain>=state.threshold;
+      const willAlert=next.rain>=next.threshold;
+      state={...state,...next};
+      if(!wasAlert || !willAlert || next.rain!==state.rain) state.alertDismissed=false;
+      // 새 날씨 입력 시 우산 확인 상태를 새로 확인하도록 초기화
+      state.umbrellaChecked=false;
+      state.alertDismissed=false;
+      save(); render(); showMessage("날씨 정보가 업데이트되었어요.","success");
+    }catch(err){showMessage(err.message,"error");}
+  });
+  $("confirmUmbrella").addEventListener("click",function(){
+    state.umbrellaChecked=true;state.alertDismissed=true;save();render();
+    showMessage("우산 챙김을 확인했어요. 안전하게 외출하세요!","success");
+  });
+  $("umbrellaCheck").addEventListener("change",function(){
+    state.umbrellaChecked=this.checked;
+    if(this.checked) state.alertDismissed=true; else state.alertDismissed=false;
+    save();render();
+  });
+  $("coatCheck").addEventListener("change",function(){state.coatChecked=this.checked;save();render();});
+  $("demoBtn").addEventListener("click",function(){
+    state={...state,condition:"rain",rain:78,current:14,low:10,high:19,threshold:60,umbrellaChecked:false,alertDismissed:false};
+    syncInputs();save();render();showMessage("예시 비 오는 날 데이터를 불러왔어요. 우산 알림을 확인해 보세요.","success");
+  });
+  $("resetBtn").addEventListener("click",function(){
+    state={...DEFAULT};syncInputs();save();render();showMessage("기본 예시 데이터로 초기화했어요.","success");
+  });
+  // 체크박스와 알림은 브라우저 로컬 저장소에 저장됩니다.
+  render();syncInputs();
+})();
+</script>
+</body>
+</html>
